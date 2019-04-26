@@ -1,0 +1,7 @@
+Icon?
+.DS_Store
+.svn
+*~
+/.idea
+/node_modules
+/package-lock.json

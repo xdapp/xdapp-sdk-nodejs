@@ -1,0 +1,28 @@
+{
+  "name": "xdapp-sdk",
+  "main": "src/xdapp.js",
+  "version": "1.0.2",
+  "scripts": {
+    "start": "./bin/Server",
+    "build": "./bin/ToolsAssets build",
+    "dev": "./bin/Server --dev"
+  },
+  "directories": {
+    "str": "src/"
+  },
+  "dependencies": {
+    "hprose": "github:hprose/hprose-nodejs#master"
+  },
+  "description": "xdapp nodejs agent sdk",
+  "keywords": [
+    "xdapp",
+    "agent",
+    "client",
+    "sdk"
+  ],
+  "author": {
+    "name": "Jonwang",
+    "url": "https://www.xdapp.com/",
+    "email": "jonwang@xindong.com"
+  }
+}
