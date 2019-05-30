@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const tls = require('tls');
 const net = require('net');
 const util = require('util');
@@ -99,8 +100,8 @@ class XDAppServiceAgent {
             serviceKey: null
         }, option || {});
 
-        host = host || (option.dev ? ProductionServer.host : DevServer.host);
-        port = port || (option.dev ? ProductionServer.port : DevServer.port);
+        host = host || (option.dev ? DevServer.host : ProductionServer.host);
+        port = port || (option.dev ? DevServer.port : ProductionServer.port);
 
         const socket = (option.tls ? tls : net).connect(port, host, {}, () => {
             this.log('Rpc client connected. ' + (socket.authorized ? 'authorized' : 'unauthorized'));
@@ -167,17 +168,23 @@ class XDAppServiceAgent {
                 this.connectTo(host, port, option);
             }, 2000);
         });
-        socket.on('end', () => {
-            this.log('Rpc server ends connection' + (this.isRegError ? '' : ', reconnect after 1 second.'));
+        socket.on('close', () => {
+            this.log('Rpc server close connection' + (this.isRegError ? '' : ', reconnect after 1 second.'));
             this.socket = null;
             this.regSuccess = false;
 
             if (!this.isRegError)setTimeout(() => {
                 // isRegError
-                console.log('aaaa');
                 this.connectTo(host, port, option);
             }, 1000);
         });
+
+        // // 超时重置
+        // socket.setTimeout(30 * 1000);
+        // socket.on('timeout', () => {
+        //     this.log('Rpc socket timeout.');
+        //     socket.end();
+        // });
 
         function _send(socket, body, request) {
             // CFlag/CVer/NLength/NAppId/NServiceId/NRequestId/NAdminId/CContextLength

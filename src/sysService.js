@@ -64,6 +64,7 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
         // 注册成功
         serviceData = data;
         XDAppServiceAgent.regSuccess = true;
+        XDAppServiceAgent.serviceId = data.serviceId;
 
         XDAppServiceAgent.log(`RPC服务注册成功，服务名: ${appName}->${serviceName}`);
     }
@@ -71,6 +72,11 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
     // rpc回调log输出
     sysCall.log = function(log, type, data = null) {
         XDAppServiceAgent.log(log, type, data);
+    }
+
+    // ping
+    sysCall.ping = function() {
+        return true;
     }
 
     // 获取服务器列表
