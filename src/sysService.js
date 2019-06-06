@@ -61,6 +61,12 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
             return false;
         }
 
+        // 不接受低于16位长度的rand
+        if (rand.length < 16) {
+            XDAppServiceAgent.log(`regOk() 回调 rand 参数太短，服务名: ${appName}->${serviceName}`);
+            return;
+        }
+
         if (getHash(time, rand) !== hash) {
             // 验证失败
             XDAppServiceAgent.log(`RPC验证失败，服务名: ${appName}->${serviceName}`);
