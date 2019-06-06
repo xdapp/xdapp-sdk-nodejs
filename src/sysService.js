@@ -15,20 +15,27 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
     }
 
     sysCall.reg = function (time, rand, hash) {
-        if (XDAppServiceAgent.regSuccess) return false;
+        if (XDAppServiceAgent.regSuccess) return {
+            'status': false
+        }
         XDAppServiceAgent.isRegError = false;
         if (hash !== sha1(`${time}.${rand}.xdapp.com`)) {
             // 验证失败
-            return false;
+            return {
+                'status': false
+            }
         }
 
         const now = parseInt(new Date().getTime() / 1000);
         if (Math.abs(now - time) > 60) {
             // 超时
-            return false;
+            return {
+                'status': false
+            }
         }
 
         return {
+            'status': true,
             'app': appName,
             'name': serviceName,
             'time': now,
