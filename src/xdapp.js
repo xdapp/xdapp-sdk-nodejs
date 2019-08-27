@@ -10,13 +10,17 @@ const Future = hprose.Future;
 const sysService = require('./sysService');
 
 const ProductionServer = {
-    host: 'www.xdapp.com',
+    host: 'service-prod.xdapp.com',
     port: 8900,
 };
 const DevServer = {
     host: 'dev.xdapp.com',
     port: 8100
-}
+};
+const GlobalServer = {
+    host: 'service-gcp.xdapp.com',
+    port: 8900
+};
 
 const RPC_VERSION = 1;          // RPC协议版本
 const FLAG_RESULT_MODE = 2;     // 返回模式
@@ -80,9 +84,17 @@ class XDAppServiceAgent {
         });
     }
 
-    // 连接到生产环境
+    // 连接到国内生产环境
     connectToProduce() {
         return this.connectTo(null, null, {
+            tls: true,
+            localDev: false,
+            dev: false,
+        });
+    }
+    // 连接到海外生产环境
+    connectToGlobal() {
+        return this.connectTo(GlobalServer.host, GlobalServer.port, {
             tls: true,
             localDev: false,
             dev: false,

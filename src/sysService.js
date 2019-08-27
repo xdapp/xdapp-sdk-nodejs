@@ -41,7 +41,7 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
             'time': now,
             'rand': rand,
             'version': 'v1',
-            'hash': getHash(time, rand),
+            'hash': getHash(now, rand),
         };
     };
 
@@ -80,7 +80,40 @@ const sysService = function (XDAppServiceAgent, appName, serviceName, serviceKey
         XDAppServiceAgent.serviceId = data.serviceId;
 
         XDAppServiceAgent.log(`RPC服务注册成功，服务名: ${appName}->${serviceName}`);
-    }
+
+        let allService = {
+            sys: [],
+            service: [],
+            other: [],
+        };
+        XDAppServiceAgent.getNames().forEach((item) => {
+            if (item === '#')return null;
+            let pos = item.indexOf('_');
+            if (pos === -1) {
+                allService.other.push(item);
+                return null;
+            }
+            let type = item.substr(0, pos);
+            let func = item.substr(pos + 1);
+            switch (type) {
+                case 'sys':
+                    allService.sys.push(func.replace(/_/g, '.') +'()');
+                    break;
+                case serviceName:
+                    allService.service.push(func.replace(/_/g, '.') +'()');
+                    break;
+                default:
+                    allService.other.push(func.replace(/_/g, '.') +'()');
+                    break;
+            }
+        });
+        XDAppServiceAgent.log(`系统RPC：${allService.sys.join(', ')}`);
+        XDAppServiceAgent.log(`已暴露服务RPC：${allService.service.join(', ')}`);
+        if (allService.other.length > 0) {
+            XDAppServiceAgent.log(`已暴露但XDApp不会调用的RPC：${allService.other.join(', ')}`);
+            XDAppServiceAgent.log(`若需要这些方法暴露给XDApp服务使用，请加: ${serviceName} 前缀`);
+        }
+    };
 
     // rpc回调log输出
     sysCall.log = function(log, type, data = null) {

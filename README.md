@@ -29,10 +29,13 @@ service.addFunction(function(args) {
 service.connectToLocalDev('127.0.0.1', 8082);
 
 // 连接到外网测试服务器
-service.connectToDev();
+// service.connectToDev();
 
-// 连接到生产环境
-service.connectToProduce();
+// 连接到生产环境(国内项目)
+// service.connectToProduce();
+
+// 连接到生产环境(海外项目)
+// service.connectToGlobal();
 ```
 
 更多的使用方法see: [https://github.com/hprose/hprose-nodejs/wiki/Hprose-服务器](https://github.com/hprose/hprose-nodejs/wiki/Hprose-服务器)
@@ -94,3 +97,7 @@ userdata    | 默认 {} 对象，可以自行设置参数
 
 see [https://github.com/hprose/hprose-nodejs/wiki/Hprose-过滤器](https://github.com/hprose/hprose-nodejs/wiki/Hprose-过滤器)
 
+## 常见问题
+
+* 使用 addInstanceMethods() 或hprose的方法暴露rpc方法，无法调用方法，提示方法不存在<br>
+  不是使用 register() 方法暴露rpc方法，则必须加上服务前缀，例如，应该用 `service.addInstanceMethods(obj, serviceName)`
