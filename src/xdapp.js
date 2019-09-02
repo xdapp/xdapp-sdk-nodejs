@@ -27,6 +27,9 @@ const FLAG_RESULT_MODE = 2;     // 返回模式
 const FLAG_FINISH = 4;          // 已完成
 
 class XDAppServiceAgent {
+    appName = '';
+    serviceName = '';
+
     constructor(appName, serviceName, serviceKey = '') {
         if (!appName) {
             throw new Error('Required appName');
@@ -36,6 +39,8 @@ class XDAppServiceAgent {
         }
         // 注入 this  初始化 hproseService
         this.showLog = false;
+        this.serviceName = serviceName;
+        this.appName = appName;
         
         this.log = function(log, type) {
             console.log(log);
