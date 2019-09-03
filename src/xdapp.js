@@ -27,9 +27,6 @@ const FLAG_RESULT_MODE = 2;     // 返回模式
 const FLAG_FINISH = 4;          // 已完成
 
 class XDAppServiceAgent {
-    appName = '';
-    serviceName = '';
-
     constructor(appName, serviceName, serviceKey = '') {
         if (!appName) {
             throw new Error('Required appName');
