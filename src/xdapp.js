@@ -48,8 +48,66 @@ class XDAppServiceAgent {
         this.addInstanceMethods(sysService(this, appName, serviceName, serviceKey), 'sys');
     }
 
-    // 注册一个服务方法，同 hprose.addFunction 方法参数，差别是默认增加了 alias 了 serviceName 的前缀
-    register(func, alias, options) {
+    addHttpApiProxy(url, alias = 'api', methods = ['get'], httpHeaders = []) {
+        const self = this;
+        if (typeof methods === 'string')methods = [methods];
+        methods.forEach(function(method) {
+            self.addWebFunction(function() {
+                const context = self.getCurrentContext()
+                const callback = arguments[arguments.length - 1]
+                let uri = '', data = null, timeout = 30
+                if (arguments.length >= 4) {
+                    uri = arguments[0]
+                    data = arguments[1]
+                    timeout = arguments[2]
+                }
+                else if (arguments.length >= 3) {
+                    uri = arguments[0]
+                    data = arguments[1]
+                }
+                else if (arguments.length >= 2) {
+                    uri = arguments[0]
+                }
+
+                let urlParse = require("url").parse(url + uri)
+                const request = require('request')
+                const options = {
+                    uri: urlParse,
+                    method: method.toUpperCase(),
+                    timeout: timeout * 1000,
+                    encoding: 'utf8',
+                    gzip: true,
+                    headers: {
+                        'Host': urlParse.hostname,
+                        'User-Agent': 'Chrome/49.0.2587.3',
+                        'X-Xdapp-Proxy': 'True',
+                        'X-Xdapp-App-Id': context.appId,
+                        'X-Xdapp-Service': self.serviceName,
+                        'X-Xdapp-Request-Id': context.requestId,
+                        'X-Xdapp-Admin-Id': context.adminId,
+                    }
+                }
+                if (options.method === 'POST' || options.method === 'PUT') {
+                    options.data = {
+                        body: typeof data === Object ? JSON.stringify(data) : '' + data,
+                    }
+                }
+
+                request(options, function (error, rep, body) {
+                    if (!rep)rep = {statusCode: 500}
+                    if (!body)body = ''
+                    callback({
+                        code: rep.statusCode,
+                        headers: rep.headers,
+                        body: body,
+                    })
+                });
+            }, alias + '_' + method, {async: true})
+        })
+    }
+
+    // 注册一个Web浏览器可用的方法，同 hprose.addFunction 方法参数，差别是默认增加了 alias 了 serviceName 的前缀
+    addWebFunction(func, alias, options) {
         if (typeof(func) !== 'function') {
             throw new Error('Argument func must be a function');
         }
@@ -61,6 +119,11 @@ class XDAppServiceAgent {
         alias = this.serviceName + '_' + alias;
 
         this.addFunction(func, alias, options);
+    }
+
+    // deprecated 请使用 addWebFunction
+    register(func, alias, options) {
+        this.addWebFunction(func, alias, options)
     }
 
     // 获取当前上下文对象

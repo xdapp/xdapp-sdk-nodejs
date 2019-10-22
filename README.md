@@ -76,6 +76,42 @@ userdata    | 默认 {} 对象，可以自行设置参数
 
 同上，连接到本地研发服务器，请下载 XDApp-Console-UI 服务包，https://hub000.xindong.com/core-system/xdapp-console-ui ，启动服务
 
+
+
+### `addHttpApiProxy(url, alias = 'api', methods = ['get'], array httpHeaders = [])`
+
+添加一个http代理
+
+使用场景：
+当服务器里提供一个内部Http接口，但是它没有暴露给外网也没有权限验证处理，但希望Web页面可以使用
+此时可以使用此方法，将它暴露成为一个XDApp的RPC服务，在网页里直接通过RPC请求将数据转发到SDK请求后返回，不仅可以实现内网穿透功能还可以在Console后台设置访问权限。
+
+每个Http代理请求都会带以下头信息，方便业务处理:
+
+* X-Xdapp-Proxy: True
+* X-Xdapp-App-Id: 1
+* X-Xdapp-Service: demo
+* X-Xdapp-Request-Id: 1
+* X-Xdapp-Admin-Id: 1
+
+```javascript
+service.addHttpApiProxy('http://127.0.0.1:9999', 'myApi', ['get', 'post', 'delete', 'put'])
+```
+
+Vue页面使用
+
+方法接受3个参数，uri, data, timeout，其中 data 只有在 post 和 put 有效，timeout 默认 30 秒
+
+```javascript
+// 其中gm为注册的服务名
+this.$service.gm.myApi.get('/uri?a=arg1&b=arg2');
+// 最终将会请求 http://127.0.0.1:9999/uri?a=arg1&b=arg2
+// 返回对象 {code: 200, headers: {...}, body: '...'}
+
+// 使用post, 第2个参数接受string或字符串, 第3个参数可设置超时
+this.$service.gm.myApi.post('/uri?a=1', {a:'arg1', b:'arg2'}, 15);
+```
+
 ### 同时连接多个环境
 
 一个 `service` 可以同时连接 `connectToProduce`, `connectToDev`, `connectToLocalDev` 3个，但需要保证使用正确的密钥。但不建议将测试环境的连接到生产环境服务器里
