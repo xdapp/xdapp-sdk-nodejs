@@ -87,20 +87,35 @@ class XDAppServiceAgent {
                         'X-Xdapp-Admin-Id': context.adminId,
                     }
                 }
-                if (options.method === 'POST' || options.method === 'PUT') {
-                    options.data = {
-                        body: typeof data === Object ? JSON.stringify(data) : '' + data,
+
+                if (options.method === 'POST') {
+                    if (typeof data === 'object') {
+                        if (options.headers['Content-Type'] && options.headers['Content-Type'].indexOf('json') !== -1) {
+                            // json 方式提交在 body 里
+                            options.body = JSON.stringify(data);
+                        }
+                        else {
+                            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                            options.form = data;
+                        }
                     }
+                    else {
+                        options.body = '' + data;
+                    }
+                }
+                else if (options.method === 'PUT') {
+                    options.body = typeof data === 'object' ? JSON.stringify(data) : '' + data
                 }
 
                 request(options, function (error, rep, body) {
-                    if (!rep)rep = {statusCode: 500}
+                    if (!rep)rep = {statusCode: -1}
                     if (!body)body = ''
                     callback({
                         code: rep.statusCode,
-                        headers: rep.headers,
+                        headers: rep.headers || {},
                         body: body,
                     })
+                    self.log('Http Proxy, method: '+ method +', code: '+ rep.statusCode +', url: '+ url + uri +', headers: '+ JSON.stringify(rep.headers || {}))
                 });
             }, alias + '_' + method, {async: true})
         })
