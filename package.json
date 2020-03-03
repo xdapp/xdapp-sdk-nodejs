@@ -1,17 +1,18 @@
 {
   "name": "xdapp-sdk",
-  "main": "src/xdapp.js",
+  "main": "dist/xdapp.js",
+  "types": "dist/xdapp.d.ts",
   "version": "1.1.0",
   "scripts": {
-    "start": "./bin/Server",
-    "build": "./bin/ToolsAssets build",
-    "dev": "./bin/Server --dev"
+    "build": "tsc"
   },
   "directories": {
     "str": "src/"
   },
   "dependencies": {
-    "hprose": "github:hprose/hprose-nodejs#master"
+    "debug": "^4.1.1",
+    "form-data": "^3.0.0",
+    "node-fetch": "^2.6.0"
   },
   "description": "xdapp nodejs agent sdk",
   "keywords": [
@@ -24,5 +25,13 @@
     "name": "Jonwang",
     "url": "https://www.xdapp.com/",
     "email": "jonwang@xindong.com"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/form-data": "^2.5.0",
+    "@types/node": "^13.7.7",
+    "@types/node-fetch": "^2.5.5",
+    "hprose": "github:hprose/hprose-nodejs#master",
+    "typescript": "^3.8.3"
   }
 }
