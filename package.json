@@ -4,7 +4,8 @@
   "types": "dist/xdapp.d.ts",
   "version": "1.1.0",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "release": "standard-version"
   },
   "directories": {
     "str": "src/"
@@ -12,6 +13,7 @@
   "dependencies": {
     "debug": "^4.1.1",
     "form-data": "^3.0.0",
+    "hprose": "^2.0.51",
     "node-fetch": "^2.6.0"
   },
   "description": "xdapp nodejs agent sdk",
@@ -31,7 +33,7 @@
     "@types/form-data": "^2.5.0",
     "@types/node": "^13.7.7",
     "@types/node-fetch": "^2.5.5",
-    "hprose": "github:hprose/hprose-nodejs#master",
+    "standard-version": "^7.1.0",
     "typescript": "^3.8.3"
   }
 }
