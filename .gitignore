@@ -4,7 +4,6 @@ Icon?
 *~
 /.idea
 /node_modules
-/package-lock.json
 /bin/test
 dist
 *.tsbuildinfo
