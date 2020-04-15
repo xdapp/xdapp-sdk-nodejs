@@ -3,10 +3,10 @@
 XDAppRPC服务SDK，使用方法
 
 ```js
-const xdapp = require('xdapp');
+import xdapp from 'xdapp-sdk';
 
 // 其中 demo 为项目名，test 为服务名，123456 为密钥
-const service = new xdapp('demo', 'test', '123456');
+const service = new xdapp.default('demo', 'test', '123456');
 
 // 注册一个方法
 service.register(function(args) {
@@ -26,7 +26,7 @@ service.addFunction(function(args) {
 }, 'test_abc');
 
 // 连接到本地测试开发服务器
-service.connectToLocalDev('127.0.0.1', 8082);
+service.connectToLocalDev('127.0.0.1', 8061);
 
 // 连接到外网测试服务器
 // service.connectToDev();
@@ -138,6 +138,8 @@ this.$service.gm.myApi.post('/uri?a=1', {a:'arg1', b:'arg2'}, 15);
 see [https://github.com/hprose/hprose-nodejs/wiki/Hprose-过滤器](https://github.com/hprose/hprose-nodejs/wiki/Hprose-过滤器)
 
 ## 常见问题
+
+* 如何打开日志：设置环境变量`DEBUG="xdapp:*"` 即可在 terminal 查看到 sdk 日志
 
 * 使用 addInstanceMethods() 或hprose的方法暴露rpc方法，无法调用方法，提示方法不存在<br>
   不是使用 register() 方法暴露rpc方法，则必须加上服务前缀，例如，应该用 `service.addInstanceMethods(obj, serviceName)`
